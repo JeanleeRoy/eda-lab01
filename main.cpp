@@ -108,30 +108,27 @@ vector<pair<int, int>> knn(pair<int, int> point, int k_v, vector<pair<int, int>>
 }
 
 int main() {
-    dataset1(50000);
-    dataset2(25000);
-    dataset3(50000);
+    dataset1(2500);
+    dataset2(1000);
+    dataset3(2500);
 
-    auto point = make_pair( 0, 900);
+    auto point = make_pair( 123, 600);
     cout << "Data set 1"  << endl;
-    res1 = knn(point, 25, data1);
+    res1 = knn(point, 100, data1);
 
-    for (auto elem: res1)
-        cout << "["<< elem.first << ","<< elem.second << "], ";
+    //for (auto elem: res1) cout << "["<< elem.first << ","<< elem.second << "], ";
 
-    auto point2 = make_pair( 959, 1450);
+    auto point2 = make_pair( 1359, 1445);
     cout << "\n\nData set 2"  << endl;
-    res2 = knn(point2, 11, data2);
+    res2 = knn(point2, 70, data2);
 
-    for (auto elem: res2)
-        cout << "["<< elem.first << ","<< elem.second << "], ";
+    //for (auto elem: res2) cout << "["<< elem.first << ","<< elem.second << "], ";
 
-    auto point3 = make_pair( 1499, 667);
+    auto point3 = make_pair( 1200, 400);
     cout << "\n\nData set 2"  << endl;
-    res3 = knn(point3, 10, data3);
+    res3 = knn(point3, 100, data3);
 
-    for (auto elem: res3)
-        cout << "["<< elem.first << ","<< elem.second << "], ";
+    //for (auto elem: res3) cout << "["<< elem.first << ","<< elem.second << "], ";
     
     exportDataset(1);
     exportDataset(2);

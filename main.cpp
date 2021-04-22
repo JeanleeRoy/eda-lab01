@@ -4,6 +4,7 @@
 #include <vector>
 #include <math.h>
 #include <queue>
+#include <fstream>
 
 using namespace std;
 
@@ -11,6 +12,39 @@ vector<pair<int, int>> data1;
 vector<pair<int, int>> data2;
 vector<pair<int, int>> data3;
 
+vector<pair<int, int>> res1, res2, res3;
+
+void exportDataset(int num = 1) {
+    fstream file;
+    string filename = (num == 1) ? "dataset1.csv" : (num==2) ? "dataset2.csv" : "dataset3.csv";
+    file.open(filename, ios::out | ios::trunc);
+    file.close();
+    file.open(filename, ios::out | ios::app);
+    if (file.is_open()) {
+        if (num == 1) {
+            for (auto i : data1) file << i.first << ',' << i.second << '\n';
+        } else if (num == 2) {
+            for (auto i : data2) file << i.first << ',' << i.second << '\n';
+        } else
+            for (auto i : data3) file << i.first << ',' << i.second << '\n';
+    } file.close();
+}
+
+void exportKNN(int num = 1) {
+    fstream file;
+    string filename = (num == 1) ? "knn1.csv" : (num==2) ? "knn2.csv" : "knn3.csv";
+    file.open(filename, ios::out | ios::trunc);
+    file.close();
+    file.open(filename, ios::out | ios::app);
+    if (file.is_open()) {
+        if (num == 1) {
+            for (auto i : res1) file << i.first << ',' << i.second << '\n';
+        } else if (num == 2) {
+            for (auto i : res2) file << i.first << ',' << i.second << '\n';
+        } else
+            for (auto i : res3) file << i.first << ',' << i.second << '\n';
+    } file.close();
+}
 
 void dataset1(int n) {
     srand (time(NULL));
@@ -47,18 +81,15 @@ void dataset3(int n) {
 }
 
 float ed(pair<int, int> p1, pair<int, int> p2) {
-    float res = 0;
-
-    auto a = p2.first - p1.first;  // x
-    auto b = p2.second - p1.second; // y
-
-    res = pow( a + b, 2);
-    return sqrt(res);
+    auto a = pow( p2.first - p1.first, 2);  // x
+    auto b = pow(p2.second - p1.second, 2); // y
+    return sqrt( a + b );
 }
 
-vector<pair<int, int>> knn(pair<int, int> point, int k, vector<pair<int, int>> data) {
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> minPQ;
+vector<pair<int, int>> knn(pair<int, int> point, int k_v, vector<pair<int, int>> data) {
+    priority_queue<pair<float, int>, vector<pair<float, int>>, greater<pair<float, int>>> minPQ;
     vector<pair<int, int>> result;
+    int k = (k_v > data.size()) ? data.size() : k_v;
 
     for(int i=0; i<data.size(); i++) {
         auto d = ed(point, data.at(i));
@@ -68,7 +99,7 @@ vector<pair<int, int>> knn(pair<int, int> point, int k, vector<pair<int, int>> d
 
     result.clear();
     for (int j=0 ; j<k; j++) {
-        float index = minPQ.top().second;
+        int index = minPQ.top().second;
         minPQ.pop();
         result.push_back(data.at(index));
     }
@@ -83,24 +114,32 @@ int main() {
 
     auto point = make_pair( 0, 900);
     cout << "Data set 1"  << endl;
-    auto res1 = knn(point, 25, data1);
+    res1 = knn(point, 25, data1);
 
     for (auto elem: res1)
-        cout << "x="<< elem.first << ", y="<< elem.second <<endl;
+        cout << "["<< elem.first << ","<< elem.second << "], ";
 
     auto point2 = make_pair( 959, 1450);
-    cout << "Data set 2"  << endl;
-    auto res2 = knn(point2, 1100, data2);
+    cout << "\n\nData set 2"  << endl;
+    res2 = knn(point2, 11, data2);
 
     for (auto elem: res2)
-        cout << "x="<< elem.first << ", y="<< elem.second <<endl;
+        cout << "["<< elem.first << ","<< elem.second << "], ";
 
     auto point3 = make_pair( 1499, 667);
-    cout << "Data set 3"  << endl;
-    auto res3 = knn(point3, 100, data3);
+    cout << "\n\nData set 2"  << endl;
+    res3 = knn(point3, 10, data3);
 
     for (auto elem: res3)
-        cout << "x="<< elem.first << ", y="<< elem.second <<endl;
+        cout << "["<< elem.first << ","<< elem.second << "], ";
+    
+    exportDataset(1);
+    exportDataset(2);
+    exportDataset(3);
+
+    exportKNN(1);
+    exportKNN(2);
+    exportKNN(3);
 
     return 0;
 }
